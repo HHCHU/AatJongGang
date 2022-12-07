@@ -20,8 +20,8 @@
 
 let stage = 0;
 let posX = 0; // bgMoving position
-const WINDOW_WIDTH = 1920;
-const WINDOW_HEIGHT = 1080;
+let WINDOW_WIDTH;
+let WINDOW_HEIGHT;
 // case2 running to the classroom
 let jumper; // jumping player
 let professors = []; // obstacle arr
@@ -171,7 +171,10 @@ function preload() {
 }
 
 function setup() {
+  WINDOW_WIDTH = windowWidth;
+  WINDOW_HEIGHT = windowHeight;
   createCanvas(WINDOW_WIDTH, WINDOW_HEIGHT);
+
 
   jumper = new PlayerVertical();
   runner = new PlayerHorizonal();
