@@ -5,9 +5,10 @@ class Professor{
         this.x = WINDOW_WIDTH-(WINDOW_HEIGHT/3);
         this.y = (3*WINDOW_HEIGHT)/4 - WINDOW_HEIGHT/3;
 
-        this.prelookTime = floor(random(500,1000));
-        this.lookingTime = floor(random(50,100));
-        this.resetTime = floor(random(150,200));
+        this.prelookTime = int(random(200,400));
+        this.lookingTime = int(random(50,100));
+        this.resetTime = int(random(150,200));
+        this.onemore = int(random(150,350));
     }
     
     lookback(inputTime) {
@@ -18,6 +19,16 @@ class Professor{
               if (inputTime >= this.lookingTime+this.resetTime+this.prelookTime){
                   this.looking = false;
                   this.prelook = false;
+                  if(inputTime >= this.lookingTime+this.resetTime+this.prelookTime+this.onemore) {
+                    this.prelook = true;
+                    if(inputTime >= (2*this.lookingTime)+this.resetTime+this.prelookTime+this.onemore) {
+                        this.looking = true;
+                        if(inputTime >= (2*this.lookingTime)+(2*this.resetTime)+this.prelookTime+this.onemore) {
+                            this.looking = false;
+                            this.prelook = false;
+                        }
+                    }
+                  }
               }
             }
         }

@@ -3,7 +3,7 @@ class PlayerHorizonal{
     constructor(){
         this.x = -200;
         this.y = (3*WINDOW_HEIGHT)/4;
-        this.speed = 6;
+        this.speed = 5;
         this.sit = false;
         this.moving = false;
     }
@@ -32,7 +32,7 @@ class PlayerHorizonal{
         }
         else if(keyIsDown(DOWN_ARROW)) {
             this.sit = true;
-            soundsit.play();
+            // soundsit.play();
         }
         else{
             this.moving = false

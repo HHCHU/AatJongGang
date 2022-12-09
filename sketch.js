@@ -18,10 +18,14 @@
 // 나타나는 빌런 설명 띄워주기 - asset 필요 <수정필요>
 
 
+const WINDOW_WIDTH = 1920;
+const WINDOW_HEIGHT = 1080;
 let stage = 0;
 let posX = 0; // bgMoving position
-let WINDOW_WIDTH;
-let WINDOW_HEIGHT;
+let posXtmp = 0; // bg img width
+// case0 opening
+let startdoh;
+let startrapper;
 // case2 running to the classroom
 let jumper; // jumping player
 let professors = []; // obstacle arr
@@ -58,8 +62,10 @@ let trasmissionChange3 = 0;
 let kickStage = 0; // result flag
 // ending scene transmission
 let endSceneTrans = 255;
+let finalScene = 0;
 
 // assets
+let imgtitle;
 let sounddirtrun;
 let soundjump;
 let soundcementrun;
@@ -76,6 +82,7 @@ let imgback;
 let imgrappersing;
 let imgkick;
 let imgroadtoroom;
+let imgroadtoroomtmp;
 let imgstudent;
 let imgsquat;
 let imgbible;
@@ -101,13 +108,26 @@ let imggamecut11;
 let instruction1;
 let instruction2;
 let instruction3;
+let imgstageinst1;
+let imgstageinst2;
+let imgstageinst3;
 let finalgame;
 let imgruns = [];
 let imgwalks = [];
+let imgdoh = [];
 let imgrappers = [];
 let imgdomids = [];
 let imgparrots = [];
+let imgjonggang;
+let imgC;
+let imgF;
+let imggaegang;
 let gameFont;
+let musicInescapable;
+let musicstage1;
+let musicstage2;
+let musicstage3;
+let musicending;
 
 function preload() {
   sounddirtrun = loadSound('audios/stage1_dirtrun.mp3');
@@ -117,14 +137,21 @@ function preload() {
   soundhit = loadSound('audios/stage3_hit.wav');
   soundsuccess = loadSound('audios/stage3_success.mp3');
   soundfail = loadSound('audios/stage3_fail.mp3');
-  soundready = loadSound('audios/stage3_ready.wav')
+  soundready = loadSound('audios/stage3_ready.wav');
+
+  musicInescapable = loadSound('musics/Inescapable.wav');
+  musicstage1 = loadSound('musics/stage1.wav');
+  musicstage2 = loadSound('musics/stage2.wav');
+  musicstage3 = loadSound('musics/stage3.wav');
+  musicending = loadSound('musics/ending.wav');
+  imgtitle = loadImage('assets/title.png');
   img6geonghwan = loadImage('assets/6geonghwan.png');
   imgclassroom = loadImage('assets/classroom.png');
-  imgprof = loadImage('assets/prof.png');
   imgback = loadImage('assets/back.png');
   imgrappersing = loadImage('assets/rappersing.png');
   imgkick = loadImage('assets/kick.png');
   imgroadtoroom = loadImage('assets/roadtoroom.png');
+  imgroadtoroomtmp = loadImage('assets/roadtoroomtmp.png');
   imgstudent = loadImage('assets/student.png');
   imgsquat = loadImage('assets/squat.png');
   imgbible = loadImage('assets/bible.png');
@@ -137,6 +164,9 @@ function preload() {
   imgcut6 = loadImage('assets/cut6.png');
   imgobs1 = loadImage('assets/obs1.png');
   imgobs2 = loadImage('assets/obs2.png');
+  imgstageinst1 = loadImage('assets/stage1.png');
+  imgstageinst2 = loadImage('assets/stage2.png');
+  imgstageinst3 = loadImage('assets/stage3.png');
   imggamecut1 = loadImage('assets/gamecut1.png');
   imggamecut2 = loadImage('assets/gamecut2.png');
   imggamecut3 = loadImage('assets/gamecut3.png');
@@ -152,30 +182,39 @@ function preload() {
   imginstruction2 = loadImage('assets/instructions2.png');
   imginstruction3 = loadImage('assets/instructions3.png');
   imgfinalgame = loadImage('assets/finalgame.png');
+  imgjonggang = loadImage('assets/jonggang.png');
+  imgC = loadImage('assets/C.png');
+  imgF = loadImage('assets/F.png');
+  imggaegang = loadImage('assets/gaegang.png');
+
   for(let i=0;i<4;i++){
-    imgruns[i] = loadImage('assets/run' + i + '.png')
+    imgruns[i] = loadImage('assets/run' + i + '.png');
   }
   for(let i=0;i<4;i++){
-    imgwalks[i] = loadImage('assets/walk' + i + '.png')
+    imgwalks[i] = loadImage('assets/walk' + i + '.png');
+  }
+  for(let i=0; i < 2; i++) {
+    imgdoh[i] = loadImage('assets/prof' + i + '.png');
   }
   for(let i=0;i<2;i++){
-    imgrappers[i] = loadImage('assets/rapper' + i + '.png')
+    imgrappers[i] = loadImage('assets/rapper' + i + '.png');
   }
   for(let i=0;i<3;i++){
-    imgdomids[i] = loadImage('assets/domid' + i + '.png')
+    imgdomids[i] = loadImage('assets/domid' + i + '.png');
   }
   for(let i=0;i<3;i++){
-    imgparrots[i] = loadImage('assets/parrot' + i + '.png')
+    imgparrots[i] = loadImage('assets/parrot' + i + '.png');
   }
   gameFont = loadFont('assets/DungGeunMo.ttf');
+
+  //opening용 asset
+  
+  startdoh = (new Obstacle(WINDOW_WIDTH,(2*(WINDOW_HEIGHT/3)), WINDOW_HEIGHT/5, WINDOW_HEIGHT/5));
+  startrapper = new Obstacle(WINDOW_WIDTH,(2*(WINDOW_HEIGHT/3)),WINDOW_HEIGHT/5, WINDOW_HEIGHT/5);
 }
 
 function setup() {
-  WINDOW_WIDTH = windowWidth;
-  WINDOW_HEIGHT = windowHeight;
   createCanvas(WINDOW_WIDTH, WINDOW_HEIGHT);
-
-
   jumper = new PlayerVertical();
   runner = new PlayerHorizonal();
   professor = new Professor();
@@ -189,13 +228,30 @@ function setup() {
 function draw() {
   switch(stage) {
     case 0: // first page
-      background(100,200,200);
-      fill(0);
-      textSize(WINDOW_WIDTH/40);
-      textAlign(CENTER);
-      textFont(gameFont);
-      text("앗! 종강이야\nPress Space to start", WINDOW_WIDTH/2, WINDOW_HEIGHT/2); 
+      // musicstage1.setVolume(0.1);
+      // musicstage1.play();
+      bgMoving(imgroadtoroom, imgroadtoroomtmp);
+      jumper.display();
 
+      startdoh.move();
+      startdoh.displayProfessor();
+      if(startdoh.x < -500) {
+        startdoh.x = WINDOW_WIDTH;
+      }
+      startrapper.rapping();
+      startrapper.displayRapper();
+      if(startrapper.x < -500) {
+        startrapper.x = WINDOW_WIDTH;
+      }
+      domid.displayDomid();
+      parrot.displayParrot();
+
+      push();
+      imageMode(CENTER);
+      image(imgtitle, WINDOW_WIDTH/2, WINDOW_HEIGHT/2, 800, 190); 
+      pop();
+
+      textFont(gameFont);
     break;
 
     case 1: // intro
@@ -204,7 +260,7 @@ function draw() {
 
     case 2: // running to the classroom
       
-      bgMoving(imgroadtoroom);
+      bgMoving(imgroadtoroom, imgroadtoroomtmp);
       image(imginstruction1,WINDOW_WIDTH*0.8,WINDOW_HEIGHT*0.05,WINDOW_HEIGHT/4, WINDOW_HEIGHT/4);
 
       // time pass
@@ -217,6 +273,7 @@ function draw() {
       if(stopwatchCase2 < 0) { // end of case2, transmission
         jumper.walktoclass();
         jumper.display();
+
         for (let i = professors.length - 1; i >= 0; i--) { // 교수님 이동
           professors[i].move();
           professors[i].displayProfessor();
@@ -235,8 +292,15 @@ function draw() {
           sootooks[i].parabola();
           sootooks[i].displaySootook();
         }
+
+        domid.displayDomid();
+        parrot.displayParrot();
+
         if(jumper.x > WINDOW_WIDTH) {
-          stage = 3;
+          stage = 23;
+          musicstage1.stop();
+          musicstage2.setVolume(0.1);
+          musicstage2.play();
         }
 
         fill(0,0,0, trasmissionChange1);
@@ -297,12 +361,12 @@ function draw() {
         } else if ((stopwatchCase2 < (Case2Playtime-15) ) && (random(1)<0.05) && (sCheck == 0)) {
           if((stopwatchCase2 < Case2Playtime - 20)) {
             if(random(1) < 0.1) {
-              sootooks.push(new Obstacle(WINDOW_WIDTH,(2*(WINDOW_HEIGHT/3))*0.4,WINDOW_HEIGHT/12, WINDOW_HEIGHT/12));
+              sootooks.push(new Obstacle((4*WINDOW_WIDTH/5),(2*(WINDOW_HEIGHT/3))*0.4,WINDOW_HEIGHT/12, WINDOW_HEIGHT/12));
               sCheck = 150;
               totalCheck = 60;
             }
           } else {
-            sootooks.push(new Obstacle(WINDOW_WIDTH,(2*(WINDOW_HEIGHT/3))*0.4,WINDOW_HEIGHT/12, WINDOW_HEIGHT/12));
+            sootooks.push(new Obstacle((4*WINDOW_WIDTH/5),(2*(WINDOW_HEIGHT/3))*0.4,WINDOW_HEIGHT/12, WINDOW_HEIGHT/12));
             sCheck = 90;
             totalCheck = 60;
           }
@@ -322,6 +386,8 @@ function draw() {
           professors[i].displayProfessor();
           if(jumper.collisionDetection(professors[i].x, professors[i].y, professors[i].w, professors[i].h)) {
             stage = 5;
+            musicstage1.stop();
+            musicending.play();
           }
         }
 
@@ -330,6 +396,8 @@ function draw() {
           rappers[i].displayRapper();
           if(jumper.collisionDetection(rappers[i].x, rappers[i].y, rappers[i].w, rappers[i].h)) {
             stage = 6;
+            musicstage1.stop();
+            musicending.play();
           }
         }
 
@@ -339,6 +407,8 @@ function draw() {
           if(jumper.collisionDetection(books[i].x, books[i].y, books[i].w, books[i].h)) {
             //console.log(books[i].x + "&" + jumper.x + "&" + books[i].y +"&"+ jumper.y+ "&"+ books[i].w +"&" + books[i].h +"jumper.x" +jumper.w );
             stage = 7;
+            musicstage1.stop();
+            musicending.play();
           }
         }
         for (let i = sootooks.length - 1; i >= 0; i--) { // 수특 충돌 체크
@@ -346,6 +416,8 @@ function draw() {
           sootooks[i].displaySootook();
           if(jumper.collisionDetection(sootooks[i].x, sootooks[i].y, sootooks[i].w, sootooks[i].h)) {
             stage = 8;
+            musicstage1.stop();
+            musicending.play();
           }
         }
 
@@ -356,10 +428,10 @@ function draw() {
 
     case 3: // running to the professor
       //TODO 교수님 뒤돌아보는 거에 돌아보기 전 상태 넣어주기
-      
+      musicstage1.stop();
       image(imgclassroom,0,0,WINDOW_WIDTH,WINDOW_HEIGHT);
       image(imginstruction2,WINDOW_WIDTH*0.8,WINDOW_HEIGHT*0.05, WINDOW_HEIGHT/4, WINDOW_HEIGHT/4);
-        
+      
       if(!Case3Entered) {
         Case3StartTime = int(millis()/1000);
         Case3Entered = true;
@@ -372,7 +444,6 @@ function draw() {
       textSize(WINDOW_WIDTH/40);
       stopwatchCase3 = Case3Playtime + Case3StartTime - int(millis()/1000);
       text(stopwatchCase3, WINDOW_WIDTH/25, WINDOW_HEIGHT/15);
-
 
       if ((stopwatchCase3 == 0 && !runner.update())) { //timeout and not arrived
         stage = 10;
@@ -391,7 +462,10 @@ function draw() {
         trasmissionChange2 = trasmissionChange2 + 5;
 
         if(trasmissionChange2 == 255) {
-          stage = 4;
+          stage = 24;
+          musicstage2.stop();
+          musicstage3.setVolume(0.1);
+          musicstage3.play();
         } 
         
       } else {
@@ -400,8 +474,9 @@ function draw() {
 
       if (professor.looking && !runner.sit) {
         stage = 9;
+        musicstage2.stop();
+        musicending.play();
       }
-
     break;
 
     case 4: // kicking the professor
@@ -436,22 +511,18 @@ function draw() {
         }
       }
       
-      if(kickStage == 3) {
+      if(kickStage == 4) {
         sum = 0;
         for(let i = 0; i < 3; i++) {
           sum += hitResult[i];
         }
-        fill(0,0,0, trasmissionChange3); // 화면 전환
-        rect(0,0, WINDOW_WIDTH*2, WINDOW_HEIGHT*2);
-        trasmissionChange3 = trasmissionChange3 + 3;
-
-        if(trasmissionChange3 > 255) {
-          if(sum == 3) {stage = 11;}
-          else if(sum == 2) {stage = 12;}
-          else if(sum == 1) {stage = 13;}
-          else if(sum == 0) {stage = 14;}
+        
+          if(sum == 3) {stage = 11; musicstage3.stop(); musicending.play();}
+          else if(sum == 2) {stage = 12; musicstage3.stop(); musicending.play();}
+          else if(sum == 1) {stage = 13; musicstage3.stop(); musicending.play();}
+          else if(sum == 0) {stage = 14; musicstage3.stop(); musicending.play();}
           //console.log(hitResult);
-        } 
+        
       }
     break;
 
@@ -488,6 +559,7 @@ function draw() {
     
 
     case 9: // caughted by professor(from case 3)
+      musicstage2.stop();
       image(imggamecut5,0,0,WINDOW_WIDTH, WINDOW_HEIGHT);
       textAlign(RIGHT);
       fill(255,50,0);
@@ -498,6 +570,7 @@ function draw() {
     
 
     case 10: // time out(from case 3)
+      musicstage2.stop();
       image(imggamecut11,0,0,WINDOW_WIDTH, WINDOW_HEIGHT);
       textAlign(RIGHT);
       fill(255,50,0);
@@ -507,84 +580,129 @@ function draw() {
 
     case 11: // hit 3 JongGang(from case 4)
     endSceneTrans -= 5;
-/*
+
     if(endSceneTrans > 0) {
-      image(imggamecut7,0,0,WINDOW_WIDTH, WINDOW_HEIGHT);
+      image(imgjonggang,0,0,WINDOW_WIDTH, WINDOW_HEIGHT);
       fill(0,0,0, endSceneTrans); // 화면 전환
       rect(0,0,WINDOW_WIDTH*2, WINDOW_HEIGHT*2);
-      textAlign(CENTER);
-      fill(255);
-      text("앗 종강이야!", WINDOW_WIDTH/2, WINDOW_HEIGHT/2);
+      finalScene++;
     } else {
-      */
-      image(imggamecut7,0,0,WINDOW_WIDTH, WINDOW_HEIGHT);
-      textAlign(RIGHT);
-      fill(255,0,0);
-      text("Press Backspace\nto Start Game Again", 19*WINDOW_WIDTH/20, 2*WINDOW_HEIGHT/20); 
-    //}
+      finalScene++;
+      if(finalScene >= 120) {
+        image(imggamecut7,0,0,WINDOW_WIDTH, WINDOW_HEIGHT);
+        textAlign(RIGHT);
+        fill(255,0,0);
+        text("Press Backspace\nto Start Game Again", 19*WINDOW_WIDTH/20, 2*WINDOW_HEIGHT/20); 
+      }
+    }
     break;
 
     case 12: // hit 2 C(from case 4)
-      image(imggamecut8,0,0,WINDOW_WIDTH, WINDOW_HEIGHT);
-      textAlign(RIGHT);
-      fill(255,0,0);
-      text("Press Backspace\nto Start Game Again", 19*WINDOW_WIDTH/20, 2*WINDOW_HEIGHT/20); 
-    break;
+      endSceneTrans -= 5;
 
+    if(endSceneTrans > 0) {
+      image(imgC,0,0,WINDOW_WIDTH, WINDOW_HEIGHT);
+      fill(0,0,0, endSceneTrans); // 화면 전환
+      rect(0,0,WINDOW_WIDTH*2, WINDOW_HEIGHT*2);
+      finalScene++;
+    } else {
+      finalScene++;
+      if(finalScene >= 120) {
+        image(imggamecut8,0,0,WINDOW_WIDTH, WINDOW_HEIGHT);
+        textAlign(RIGHT);
+        fill(255,0,0);
+        text("Press Backspace\nto Start Game Again", 19*WINDOW_WIDTH/20, 2*WINDOW_HEIGHT/20); 
+      }
+    }
     break;
 
     case 13: // hit 1 F(from case 4)
-      image(imggamecut9,0,0,WINDOW_WIDTH, WINDOW_HEIGHT);
-      textAlign(RIGHT);
-      fill(255,0,0);
-      text("Press Backspace\nto Start Game Again", 19*WINDOW_WIDTH/20, 2*WINDOW_HEIGHT/20); 
-    break;
+    endSceneTrans -= 5;
 
+    if(endSceneTrans > 0) {
+    image(imgF,0,0,WINDOW_WIDTH, WINDOW_HEIGHT);
+    fill(0,0,0, endSceneTrans); // 화면 전환
+    rect(0,0,WINDOW_WIDTH*2, WINDOW_HEIGHT*2);
+    finalScene++;
+    } else {
+      finalScene++;
+        if(finalScene >= 120) {
+        image(imggamecut9,0,0,WINDOW_WIDTH, WINDOW_HEIGHT);
+        textAlign(RIGHT);
+        fill(255,0,0);
+        text("Press Backspace\nto Start Game Again", 19*WINDOW_WIDTH/20, 2*WINDOW_HEIGHT/20); 
+    }
+    }
     break;
 
     case 14: // hit 0 GaeGang(from case 4)
-      image(imggamecut10,0,0,WINDOW_WIDTH, WINDOW_HEIGHT); 
-      textAlign(RIGHT);
-      fill(255,0,0);
-      text("Press Backspace\nto Start Game Again", 19*WINDOW_WIDTH/20, 2*WINDOW_HEIGHT/20); 
-    break;
+      endSceneTrans -= 5;
 
+      if(endSceneTrans > 0) {
+      image(imggaegang,0,0,WINDOW_WIDTH, WINDOW_HEIGHT);
+      fill(0,0,0, endSceneTrans); // 화면 전환
+      rect(0,0,WINDOW_WIDTH*2, WINDOW_HEIGHT*2);
+      finalScene++;
+      } else {
+        finalScene++;
+        if(finalScene >= 120) {
+          image(imggamecut10,0,0,WINDOW_WIDTH, WINDOW_HEIGHT);
+          textAlign(RIGHT);
+          fill(255,0,0);
+          text("Press Backspace\nto Start Game Again", 19*WINDOW_WIDTH/20, 2*WINDOW_HEIGHT/20); 
+      }
+    }
     break;
 
     case 15: // story cut scene
       image(imgcut2, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
     break;
-    break;
+
 
     case 16:
       image(imgcut3, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
     break;
-    break;
+
 
     case 17:
       image(imgcut4, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
     break;
-    break;
+
 
     case 18:
       image(imgcut5, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
     break;
-    break;
+
 
     case 19:
       image(imgcut6, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
     break;
-    break;
+
 
     case 20:
       image(imgobs1, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
     break;
-    break;
+
 
     case 21:
       image(imgobs2, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
     break;
+    
+    case 22: // stage1 instruct
+      image(imgstageinst1, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+
     break;
+
+    case 23: // stage2 instruct
+      image(imgstageinst2, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+    break;
+
+    break;
+
+    case 24: // stage3 instruct
+      image(imgstageinst3, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+    break;
+    
     
   default:
 
@@ -593,20 +711,30 @@ function draw() {
 }
 
 /**parameter로 넣은 이미지 이동 */
-function bgMoving(movingImg) {
+function bgMoving(movingImg, movingImgtmp) {
   background(220);
   image(movingImg, -posX, 0, WINDOW_WIDTH*2, WINDOW_HEIGHT);
-  // if(posX == WINDOW_WIDTH){
-  //   image(movingImg, -posX, 0, WINDOW_WIDTH*2, WINDOW_HEIGHT);
-  // } else{
-    posX += 3;
-  //}
+  image(movingImgtmp, WINDOW_WIDTH*2-posXtmp, 0, WINDOW_WIDTH*2, WINDOW_HEIGHT);
+
+  posX += 4;
+  posXtmp += 4;
+
+  console.log(posX + "/" + posXtmp);
+
+  if(posX == WINDOW_WIDTH*2) {
+    posX = 0;
+  }
+  if(posXtmp == WINDOW_WIDTH*2) {
+    posXtmp = 0;
+  }
 }
 
 function keyPressed() {
-  if(keyCode == 32) {
+  if(keyCode == 32) { // press space
     if(stage == 0) {
       stage = 1;
+      musicInescapable.setVolume(0.3);
+      musicInescapable.play();
     } else if(stage==1) {
       stage = 15;
     } else if(stage==15) {
@@ -618,20 +746,28 @@ function keyPressed() {
     } else if(stage==18) {
       stage = 19;
     } else if(stage==19) {
-      stage = 20;
+      stage = 22;
+      musicInescapable.stop();
+      musicstage1.setVolume(0.1);
+      musicstage1.play();
     } else if(stage==20) {
       stage = 21;
     } else if(stage==21) {
+      posX = 0;
+      posXtmp = 0;
       stage = 2;
-    } else if(stage == 2) {
+    } else if(stage==22) {
+      stage = 20;
+    } else if(stage==23){
       stage = 3;
-    } else if(stage == 3) {
+    } else if(stage == 24) {
       stage = 4;
     }
   }
   
   if(keyCode == 8){ // reset press backspace
     posX = 0;
+    posXtmp = 0;
     stage = 0;
     //case2
     jumper = new PlayerVertical();
@@ -653,21 +789,37 @@ function keyPressed() {
     sum = 0;
     kickStage = 0;
     trasmissionChange3 = 0;
+    //final stage
+    finalScene = 0;
+    endSceneTrans = 0;
+    //music
+    musicInescapable.stop();
+    musicstage1.stop();
+    musicstage2.stop();
+    musicstage3.stop();
+    musicending.stop();
   }
 
   if(keyCode == 13) { //Enter
     if(stage == 5 || stage == 6 || stage == 7|| stage == 8) {
+      musicending.stop();
+      musicstage1.setVolume(0.1);
+      musicstage1.play();
       posX = 0;
-      stage = 2;
+      posXtmp = 0;
       jumper = new PlayerVertical();
       professors = [];
       rappers = [];
-      books = [];
       sootooks = [];
+      books = [];
       Case2Entered = false;
       stopwatchCase2 = Case2Playtime;
+      stage = 2;
     }
     if(stage == 9 || stage == 10) {
+      musicending.stop();
+      musicstage2.setVolume(0.1);
+      musicstage2.play();
       runner = new PlayerHorizonal();
       professor = new Professor();
       Case3Entered = false;
@@ -681,11 +833,13 @@ function keyPressed() {
       if(jumper.jumping && !jumper.doubleJump) {
           jumper.speed = 30;
           jumper.doubleJump = true;
+          soundjump.setVolume(0.8);
           soundjump.play();
       }
       if(!jumper.jumping) {
           jumper.speed = 36;
           jumper.jumping = true;
+          soundjump.setVolume(0.8);
           soundjump.play();
       }
     }
@@ -693,7 +847,11 @@ function keyPressed() {
 
   if(stage == 4) { // 정강이 잘 찼는지 판단
     switch(kickStage) {
-      case 0: 
+      case 0:
+        kickStage = 1;
+        break;
+
+      case 1: 
         soundhit.play();
         // soundready.stop();
         if(pointerY < (hitbox.y + 70) && pointerY > (hitbox.y - 70)) {
@@ -705,10 +863,10 @@ function keyPressed() {
           soundfail.play();
         }
         resetHitbox();
-        kickStage = 1;
+        kickStage = 2;
       break;
 
-      case 1:
+      case 2:
         soundhit.play();
         // soundready.stop();
         if(pointerY < (hitbox.y + 70) && pointerY > (hitbox.y - 70)) {
@@ -720,10 +878,10 @@ function keyPressed() {
           soundfail.play();
         }
         resetHitbox();
-        kickStage = 2;
+        kickStage = 3;
       break;
 
-      case 2:
+      case 3:
         soundhit.play();
         // soundready.stop();
         if(pointerY < (hitbox.y + 70) && pointerY > (hitbox.y - 70)) {
@@ -734,7 +892,7 @@ function keyPressed() {
           hitResult[2] = 0;
           soundfail.play();
         }
-        kickStage = 3;
+        kickStage = 4;
         boxRand = int(random(5,10));
       break;
     }

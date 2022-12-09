@@ -26,7 +26,12 @@ class Obstacle{
 
 
     displayProfessor() {
-        image(imgprof,this.x, this.y, this.w, this.h);
+        if((int(millis()/200)%2)==0){
+            image(imgdoh[0],this.x, this.y, this.w, this.h);
+        }
+        else if((int(millis()/200)%2)==1){
+            image(imgdoh[1],this.x, this.y, this.w, this.h);
+        }
     }
 
     displayRapper() {

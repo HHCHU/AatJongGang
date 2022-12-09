@@ -86,7 +86,7 @@ class PlayerVertical{
         let distance = sqrt( (distX*distX) + (distY*distY) );
         let standard = sqrt( (this.w*this.w)/4 + (this.h*this.h)/4 ); 
         
-        if (distance < (2*standard)/3) {
+        if (distance < standard/2) { // (2*standard)/ㄷ
             //console.log(obstacleX + "/" + obstacleY+ "/" +obstacleW +"/" +obstacleH +"/" +distance+"/"+standard);
             return true;
         } 
