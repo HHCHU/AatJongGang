@@ -455,6 +455,9 @@ function draw() {
 
       if ((stopwatchCase3 == 0 && !runner.update())) { //timeout and not arrived
         stage = 10;
+        musicstage2.stop();
+        musicfailending.setVolume(0.1);
+        musicfailending.play();
       }
 
       turnTimer = int(millis()/10) - Case3StartTime*100; // 1sec = 100turnTimer
