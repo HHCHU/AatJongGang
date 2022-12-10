@@ -47,7 +47,7 @@ let runner; // running player
 let professor; // professor turning around
 let Case3Entered = false;
 let stopwatchCase3;
-let Case3Playtime = 16;
+let Case3Playtime = 15;
 let Case3StartTime;
 let trasmissionChange2 = 0;
 let turnTimer = 0;
@@ -122,12 +122,14 @@ let imgjonggang;
 let imgC;
 let imgF;
 let imggaegang;
+let imgaim;
 let gameFont;
 let musicInescapable;
 let musicstage1;
 let musicstage2;
 let musicstage3;
 let musicending;
+let musicfailending;
 
 function preload() {
   sounddirtrun = loadSound('audios/stage1_dirtrun.mp3');
@@ -144,6 +146,7 @@ function preload() {
   musicstage2 = loadSound('musics/stage2.wav');
   musicstage3 = loadSound('musics/stage3.wav');
   musicending = loadSound('musics/ending.wav');
+  musicfailending = loadSound('musics/failending.wav');
   imgtitle = loadImage('assets/title.png');
   img6geonghwan = loadImage('assets/6geonghwan.png');
   imgclassroom = loadImage('assets/classroom.png');
@@ -186,6 +189,7 @@ function preload() {
   imgC = loadImage('assets/C.png');
   imgF = loadImage('assets/F.png');
   imggaegang = loadImage('assets/gaegang.png');
+  imgaim = loadImage('assets/aim_red.png');
 
   for(let i=0;i<4;i++){
     imgruns[i] = loadImage('assets/run' + i + '.png');
@@ -387,7 +391,8 @@ function draw() {
           if(jumper.collisionDetection(professors[i].x, professors[i].y, professors[i].w, professors[i].h)) {
             stage = 5;
             musicstage1.stop();
-            musicending.play();
+            musicfailending.setVolume(0.1);
+            musicfailending.play();
           }
         }
 
@@ -397,7 +402,8 @@ function draw() {
           if(jumper.collisionDetection(rappers[i].x, rappers[i].y, rappers[i].w, rappers[i].h)) {
             stage = 6;
             musicstage1.stop();
-            musicending.play();
+            musicfailending.setVolume(0.1);
+            musicfailending.play();
           }
         }
 
@@ -408,7 +414,8 @@ function draw() {
             //console.log(books[i].x + "&" + jumper.x + "&" + books[i].y +"&"+ jumper.y+ "&"+ books[i].w +"&" + books[i].h +"jumper.x" +jumper.w );
             stage = 7;
             musicstage1.stop();
-            musicending.play();
+            musicfailending.setVolume(0.1);
+            musicfailending.play();
           }
         }
         for (let i = sootooks.length - 1; i >= 0; i--) { // 수특 충돌 체크
@@ -417,7 +424,8 @@ function draw() {
           if(jumper.collisionDetection(sootooks[i].x, sootooks[i].y, sootooks[i].w, sootooks[i].h)) {
             stage = 8;
             musicstage1.stop();
-            musicending.play();
+            musicfailending.setVolume(0.1);
+            musicfailending.play();
           }
         }
 
@@ -475,7 +483,8 @@ function draw() {
       if (professor.looking && !runner.sit) {
         stage = 9;
         musicstage2.stop();
-        musicending.play();
+        musicfailending.setVolume(0.1);
+        musicfailending.play();
       }
     break;
 
@@ -488,7 +497,10 @@ function draw() {
 
       hitbox.display();
       fill(0);
-      ellipse(pointerX, pointerY, 30,30);
+      imageMode(CENTER);
+      image(imgaim, pointerX,pointerY, 50,50);
+      imageMode(CORNER);
+      //ellipse(pointerX, pointerY, 30,30);
       pointerY += pointerSpeed;
       if(pointerY > WINDOW_HEIGHT) {pointerSpeed = -pointerSpeed;}
       else if(pointerY < 0) {pointerSpeed = -pointerSpeed;}
@@ -517,10 +529,10 @@ function draw() {
           sum += hitResult[i];
         }
         
-          if(sum == 3) {stage = 11; musicstage3.stop(); musicending.play();}
-          else if(sum == 2) {stage = 12; musicstage3.stop(); musicending.play();}
-          else if(sum == 1) {stage = 13; musicstage3.stop(); musicending.play();}
-          else if(sum == 0) {stage = 14; musicstage3.stop(); musicending.play();}
+          if(sum == 3) {stage = 11; musicstage3.stop(); musicending.setVolume(0.1); musicending.play();}
+          else if(sum == 2) {stage = 12; musicstage3.stop(); musicending.setVolume(0.1); musicending.play();}
+          else if(sum == 1) {stage = 13; musicstage3.stop(); musicfailending.setVolume(0.1); musicfailending.play();}
+          else if(sum == 0) {stage = 14; musicstage3.stop(); musicfailending.setVolume(0.1); musicfailending.play();}
           //console.log(hitResult);
         
       }
@@ -763,6 +775,61 @@ function keyPressed() {
     } else if(stage == 24) {
       stage = 4;
     }
+
+
+    if(stage == 4) { // 정강이 잘 찼는지 판단
+      switch(kickStage) {
+        case 0:
+          kickStage = 1;
+          break;
+
+        case 1: 
+          soundhit.play();
+          // soundready.stop();
+          if(pointerY < (hitbox.y + 70) && pointerY > (hitbox.y - 70)) {
+            hitResult[0] = 1;
+            soundsuccess.play();
+          }
+          else {
+            hitResult[0] = 0;
+            soundfail.play();
+          }
+          resetHitbox();
+          kickStage = 2;
+        break;
+
+        case 2:
+          soundhit.play();
+          // soundready.stop();
+          if(pointerY < (hitbox.y + 70) && pointerY > (hitbox.y - 70)) {
+            hitResult[1] = 1;
+            soundsuccess.play();
+          }
+          else {
+            hitResult[1] = 0;
+            soundfail.play();
+          }
+          resetHitbox();
+          kickStage = 3;
+        break;
+
+        case 3:
+          soundhit.play();
+          // soundready.stop();
+          if(pointerY < (hitbox.y + 70) && pointerY > (hitbox.y - 70)) {
+            hitResult[2] = 1;
+            soundsuccess.play();
+          }
+          else {
+            hitResult[2] = 0;
+            soundfail.play();
+          }
+          kickStage = 4;
+          boxRand = int(random(5,10));
+        break;
+      }
+    }
+
   }
   
   if(keyCode == 8){ // reset press backspace
@@ -798,11 +865,13 @@ function keyPressed() {
     musicstage2.stop();
     musicstage3.stop();
     musicending.stop();
+    musicfailending.stop();
   }
 
   if(keyCode == 13) { //Enter
     if(stage == 5 || stage == 6 || stage == 7|| stage == 8) {
       musicending.stop();
+      musicfailending.stop();
       musicstage1.setVolume(0.1);
       musicstage1.play();
       posX = 0;
@@ -818,6 +887,7 @@ function keyPressed() {
     }
     if(stage == 9 || stage == 10) {
       musicending.stop();
+      musicfailending.stop();
       musicstage2.setVolume(0.1);
       musicstage2.play();
       runner = new PlayerHorizonal();
@@ -842,59 +912,6 @@ function keyPressed() {
           soundjump.setVolume(0.8);
           soundjump.play();
       }
-    }
-  }
-
-  if(stage == 4) { // 정강이 잘 찼는지 판단
-    switch(kickStage) {
-      case 0:
-        kickStage = 1;
-        break;
-
-      case 1: 
-        soundhit.play();
-        // soundready.stop();
-        if(pointerY < (hitbox.y + 70) && pointerY > (hitbox.y - 70)) {
-          hitResult[0] = 1;
-          soundsuccess.play();
-        }
-        else {
-          hitResult[0] = 0;
-          soundfail.play();
-        }
-        resetHitbox();
-        kickStage = 2;
-      break;
-
-      case 2:
-        soundhit.play();
-        // soundready.stop();
-        if(pointerY < (hitbox.y + 70) && pointerY > (hitbox.y - 70)) {
-          hitResult[1] = 1;
-          soundsuccess.play();
-        }
-        else {
-          hitResult[1] = 0;
-          soundfail.play();
-        }
-        resetHitbox();
-        kickStage = 3;
-      break;
-
-      case 3:
-        soundhit.play();
-        // soundready.stop();
-        if(pointerY < (hitbox.y + 70) && pointerY > (hitbox.y - 70)) {
-          hitResult[2] = 1;
-          soundsuccess.play();
-        }
-        else {
-          hitResult[2] = 0;
-          soundfail.play();
-        }
-        kickStage = 4;
-        boxRand = int(random(5,10));
-      break;
     }
   }
 

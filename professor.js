@@ -5,9 +5,9 @@ class Professor{
         this.x = WINDOW_WIDTH-(WINDOW_HEIGHT/3);
         this.y = (3*WINDOW_HEIGHT)/4 - WINDOW_HEIGHT/3;
 
-        this.prelookTime = int(random(200,400));
-        this.lookingTime = int(random(50,100));
-        this.resetTime = int(random(150,200));
+        this.prelookTime = int(random(200,400)); //prelook 전까지
+        this.lookingTime = int(random(25,75)); //prelook에서 looking될때까지
+        this.resetTime = int(random(150,200)); //reset될떄까지
         this.onemore = int(random(150,350));
     }
     
