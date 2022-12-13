@@ -275,6 +275,7 @@ function draw() {
       stopwatchCase2 = Case2Playtime + Case2StartTime - int(millis()/1000);
 
       if(stopwatchCase2 < 0) { // end of case2, transmission
+        jumper.jumping = false;
         jumper.walktoclass();
         jumper.display();
 
@@ -342,7 +343,7 @@ function draw() {
           if((stopwatchCase2 < Case2Playtime - 10)) {
             if(random(1) < 0.1) {
               rappers.push(new Obstacle(WINDOW_WIDTH,(2*(WINDOW_HEIGHT/3)),WINDOW_HEIGHT/5, WINDOW_HEIGHT/5));
-              rCheck = 150;
+              rCheck = 140;
               totalCheck = 60;
             }
           } else {
@@ -366,12 +367,12 @@ function draw() {
           if((stopwatchCase2 < Case2Playtime - 20)) {
             if(random(1) < 0.1) {
               sootooks.push(new Obstacle((4*WINDOW_WIDTH/5),(2*(WINDOW_HEIGHT/3))*0.4,WINDOW_HEIGHT/12, WINDOW_HEIGHT/12));
-              sCheck = 150;
+              sCheck = 170;
               totalCheck = 60;
             }
           } else {
             sootooks.push(new Obstacle((4*WINDOW_WIDTH/5),(2*(WINDOW_HEIGHT/3))*0.4,WINDOW_HEIGHT/12, WINDOW_HEIGHT/12));
-            sCheck = 90;
+            sCheck = 110;
             totalCheck = 60;
           }
         }
@@ -861,7 +862,7 @@ function keyPressed() {
     trasmissionChange3 = 0;
     //final stage
     finalScene = 0;
-    endSceneTrans = 0;
+    endSceneTrans = 255;
     //music
     musicInescapable.stop();
     musicstage1.stop();

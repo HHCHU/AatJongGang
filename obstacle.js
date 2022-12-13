@@ -21,7 +21,7 @@ class Obstacle{
 
     parabola() {
         this.x = this.x - (WINDOW_WIDTH/50);
-        this.y = this.y + (WINDOW_HEIGHT/95);
+        this.y = this.y + (WINDOW_HEIGHT/90);
     }
 
 
