@@ -8,15 +8,15 @@ class Obstacle{
     }
       
     move() {
-        this.x -= 9;
+        this.x -= 9/2;
     }
 
     rapping() {
-        this.x -= random(-4,20);
+        this.x -= random(-4/2,20/2);
     }
 
     throw() {
-        this.x -= 13;
+        this.x -= 13/2;
     }
 
     parabola() {

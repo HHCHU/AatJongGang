@@ -15,11 +15,10 @@
 // 강의실에서 다가가는 모습 fidelity 높이기 - 강의실 안에서 교수님한테 몰래 걸어가는 asset, 앉는 asset 필요 <해결!>
 // 달리는 과정에 이미지 바뀌도록 해주기 <해결!>
 // 오른쪽 상단에 무슨 버튼으로 플레이할 수 있는지 띄워주기 - asset 필요 <준해결>
-// 나타나는 빌런 설명 띄워주기 - asset 필요 <수정필요>
 
 
-const WINDOW_WIDTH = 1920;
-const WINDOW_HEIGHT = 1080;
+const WINDOW_WIDTH = 1920/2; // 1920
+const WINDOW_HEIGHT = 1080/2; //1080
 let stage = 0;
 let posX = 0; // bgMoving position
 let posXtmp = 0; // bg img width
@@ -56,7 +55,7 @@ let hitResult; // kicking professor success array
 let sum = 0; // total success times
 let pointerX = WINDOW_WIDTH/2; // moving pointer X
 let pointerY = WINDOW_HEIGHT/2; // moving pointer Y
-let pointerSpeed = 20; // pointer speed
+let pointerSpeed = 20/2; // pointer speed
 let boxRand; // hit box range
 let trasmissionChange3 = 0;
 let kickStage = 0; // result flag
@@ -213,12 +212,13 @@ function preload() {
 
   //opening용 asset
   
-  startdoh = (new Obstacle(WINDOW_WIDTH,(2*(WINDOW_HEIGHT/3)), WINDOW_HEIGHT/5, WINDOW_HEIGHT/5));
+  startdoh = new Obstacle(WINDOW_WIDTH,(2*(WINDOW_HEIGHT/3)), WINDOW_HEIGHT/5, WINDOW_HEIGHT/5);
   startrapper = new Obstacle(WINDOW_WIDTH,(2*(WINDOW_HEIGHT/3)),WINDOW_HEIGHT/5, WINDOW_HEIGHT/5);
 }
 
 function setup() {
   createCanvas(WINDOW_WIDTH, WINDOW_HEIGHT);
+  document.body.style.zoom = "200%";
   jumper = new PlayerVertical();
   runner = new PlayerHorizonal();
   professor = new Professor();
@@ -252,7 +252,7 @@ function draw() {
 
       push();
       imageMode(CENTER);
-      image(imgtitle, WINDOW_WIDTH/2, WINDOW_HEIGHT/2, 800, 190); 
+      image(imgtitle, WINDOW_WIDTH/2, WINDOW_HEIGHT/2, 800/2, 190/2); 
       pop();
 
       textFont(gameFont);
@@ -309,7 +309,7 @@ function draw() {
         }
 
         fill(0,0,0, trasmissionChange1);
-        rect(0,0,WINDOW_WIDTH, WINDOW_HEIGHT);
+        rect(0,0,windowWidth, windowHeight);
         trasmissionChange1 = trasmissionChange1 + 1;
 
       } else { // playing game
@@ -470,7 +470,7 @@ function draw() {
 
       if (runner.update()) { // 교수님 접촉하면
         fill(0,0,0, trasmissionChange2); // 화면 전환
-        rect(0,0,WINDOW_WIDTH, WINDOW_HEIGHT);
+        rect(0,0,windowWidth, windowHeight);
         trasmissionChange2 = trasmissionChange2 + 5;
 
         if(trasmissionChange2 == 255) {
@@ -600,7 +600,7 @@ function draw() {
     if(endSceneTrans > 0) {
       image(imgjonggang,0,0,WINDOW_WIDTH, WINDOW_HEIGHT);
       fill(0,0,0, endSceneTrans); // 화면 전환
-      rect(0,0,WINDOW_WIDTH*2, WINDOW_HEIGHT*2);
+      rect(0,0,windowWidth, windowHeight);
       finalScene++;
     } else {
       finalScene++;
@@ -619,7 +619,7 @@ function draw() {
     if(endSceneTrans > 0) {
       image(imgC,0,0,WINDOW_WIDTH, WINDOW_HEIGHT);
       fill(0,0,0, endSceneTrans); // 화면 전환
-      rect(0,0,WINDOW_WIDTH*2, WINDOW_HEIGHT*2);
+      rect(0,0,windowWidth, windowHeight);
       finalScene++;
     } else {
       finalScene++;
@@ -638,7 +638,7 @@ function draw() {
     if(endSceneTrans > 0) {
     image(imgF,0,0,WINDOW_WIDTH, WINDOW_HEIGHT);
     fill(0,0,0, endSceneTrans); // 화면 전환
-    rect(0,0,WINDOW_WIDTH*2, WINDOW_HEIGHT*2);
+    rect(0,0,windowWidth, windowHeight);
     finalScene++;
     } else {
       finalScene++;
@@ -657,7 +657,7 @@ function draw() {
       if(endSceneTrans > 0) {
       image(imggaegang,0,0,WINDOW_WIDTH, WINDOW_HEIGHT);
       fill(0,0,0, endSceneTrans); // 화면 전환
-      rect(0,0,WINDOW_WIDTH*2, WINDOW_HEIGHT*2);
+      rect(0,0,windowWidth, windowHeight);
       finalScene++;
       } else {
         finalScene++;
@@ -790,7 +790,7 @@ function keyPressed() {
         case 1: 
           soundhit.play();
           // soundready.stop();
-          if(pointerY < (hitbox.y + 70) && pointerY > (hitbox.y - 70)) {
+          if(pointerY < (hitbox.y + hitbox.halfHeight) && pointerY > (hitbox.y - hitbox.halfHeight)) {
             hitResult[0] = 1;
             soundsuccess.play();
           }
@@ -805,7 +805,7 @@ function keyPressed() {
         case 2:
           soundhit.play();
           // soundready.stop();
-          if(pointerY < (hitbox.y + 70) && pointerY > (hitbox.y - 70)) {
+          if(pointerY < (hitbox.y + hitbox.halfHeight) && pointerY > (hitbox.y - hitbox.halfHeight)) {
             hitResult[1] = 1;
             soundsuccess.play();
           }
@@ -820,7 +820,7 @@ function keyPressed() {
         case 3:
           soundhit.play();
           // soundready.stop();
-          if(pointerY < (hitbox.y + 70) && pointerY > (hitbox.y - 70)) {
+          if(pointerY < (hitbox.y + hitbox.halfHeight) && pointerY > (hitbox.y - hitbox.halfHeight)) {
             hitResult[2] = 1;
             soundsuccess.play();
           }
@@ -905,15 +905,15 @@ function keyPressed() {
   if(stage == 2) {
     if(keyCode === 38) {
       if(jumper.jumping && !jumper.doubleJump) {
-          jumper.speed = 30;
+          jumper.speed = 30/2;
           jumper.doubleJump = true;
-          soundjump.setVolume(0.8);
+          soundjump.setVolume(0.6);
           soundjump.play();
       }
       if(!jumper.jumping) {
-          jumper.speed = 36;
+          jumper.speed = 36/2;
           jumper.jumping = true;
-          soundjump.setVolume(0.8);
+          soundjump.setVolume(0.6);
           soundjump.play();
       }
     }

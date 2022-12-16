@@ -4,7 +4,7 @@ class PlayerVertical{
         this.x = WINDOW_WIDTH/20;
         this.y = (2*(WINDOW_HEIGHT/3));
         this.speed = 0;
-        this.grav = -2;
+        this.grav = -1; // origin = -2
         this.jumping = false;
         this.doubleJump = false;
         this.maxJumpDist = WINDOW_HEIGHT/5;
@@ -30,8 +30,8 @@ class PlayerVertical{
     }
 
     walktoclass() {
-        this.y = (3*(WINDOW_HEIGHT/4)) - 100;
-        this.x += 7;
+        this.y = (2*(WINDOW_HEIGHT/3));
+        this.x += 7/2;
     }
 
     display() {

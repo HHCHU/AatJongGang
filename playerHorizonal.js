@@ -1,9 +1,9 @@
 class PlayerHorizonal{
  
     constructor(){
-        this.x = -200;
+        this.x = WINDOW_WIDTH/200;
         this.y = (3*WINDOW_HEIGHT)/4;
-        this.speed = 5;
+        this.speed = 4;
         this.sit = false;
         this.moving = false;
     }
@@ -17,10 +17,6 @@ class PlayerHorizonal{
         }
     }
 
-    toKickStage() {
-        ;
-    }
- 
     controller(){
         if(keyIsDown(RIGHT_ARROW)){
             if(this.sit) {}
