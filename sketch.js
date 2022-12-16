@@ -907,13 +907,13 @@ function keyPressed() {
       if(jumper.jumping && !jumper.doubleJump) {
           jumper.speed = 30/2;
           jumper.doubleJump = true;
-          soundjump.setVolume(0.6);
+          soundjump.setVolume(0.3);
           soundjump.play();
       }
       if(!jumper.jumping) {
           jumper.speed = 36/2;
           jumper.jumping = true;
-          soundjump.setVolume(0.6);
+          soundjump.setVolume(0.3);
           soundjump.play();
       }
     }

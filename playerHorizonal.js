@@ -1,9 +1,9 @@
 class PlayerHorizonal{
  
     constructor(){
-        this.x = WINDOW_WIDTH/200;
+        this.x = -100;
         this.y = (3*WINDOW_HEIGHT)/4;
-        this.speed = 4;
+        this.speed = 3;
         this.sit = false;
         this.moving = false;
     }
